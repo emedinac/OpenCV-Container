@@ -1,30 +1,32 @@
-#define _GLIBCXX_USE_CXX11_ABI 0
-
-#include <stdio.h>
-#include <iostream>
-
-#include "opencv2/core/core.hpp"
 #include "opencv2/opencv.hpp"
-#include "opencv2/videoio/videoio.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/video.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
+#include <opencv2/highgui/highgui.hpp>
 
-int main(int argc, char* argv[])
-{
-	cv::Mat image;
-	cv::VideoCapture capture;
-	capture.set(CV_CAP_PROP_FRAME_WIDTH, 640);
-	capture.set(CV_CAP_PROP_FRAME_HEIGHT, 480);
-	capture.open(0);
+#include "iostream"
 
-	while(true) {
-		capture >> image;
-		cv::imshow("test", image);
+int main(int, char**) {
+    // open the first webcam plugged in the computer
+    cv::VideoCapture camera(0);
+    if (!camera.isOpened()) {
+        std::cerr << "ERROR: Could not open camera" << std::endl;
+        return 1;
+    }
 
-		int c = cv::waitKey(10);
-		if (c == 27) break;
-	}
+    // create a window to display the images from the webcam
+    // cv::namedWindow("Webcam", cv::WINDOW_AUTOSIZE);
 
-	return 0;
+    // this will contain the image from the webcam
+    cv::Mat frame;
+
+    // display the frame until you press a key
+    while (1) {
+        // capture the next frame from the webcam
+        camera >> frame;
+        // show the image on the window
+        // cv::imshow("Webcam", frame);
+        cv::imwrite("image_path.png", frame);
+        // wait (10ms) for a key to be pressed
+        if (cv::waitKey(100) == 27) break;
+        std::cout<<"file\n";
+    }
+    return 0;
 }
